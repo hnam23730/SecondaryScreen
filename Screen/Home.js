@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import {StyleSheet,Text,View,ScrollView,Image,TouchableOpacity,FlatList} from "react-native";
-import { useNavigation } from '@react-navigation/native';
-
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Houses from './Houses';
+import  Icon from "react-native-vector-icons/FontAwesome";
 const HomeScreen = () => {
-    const navigation = useNavigation();
-    const Houses = () => {
-        navigation.navigate('Houses');
-    };
+    const Tab = createBottomTabNavigator();
     const [categories, setCategories] = useState([
     {
       name: 'Houses',
@@ -20,12 +18,55 @@ const HomeScreen = () => {
       name: 'Condos',
       image: require('../assets/image/Condos.png'),
     },
+    
   ]);
-  
+  const [seccategories, setsecCategories] = useState([
+    {
+      name: 'One Mission Bay',
+      city: 'San Francisco, CA',
+      image: require('../assets/image/anh1.png'),
+      isLike : false,      
+    },
+    {
+      name: '1410 Stiener St',
+      city: 'San Francisco, CA',
+      image: require('../assets/image/anh2.png'),
+      isLike : false, 
+    },
+    {
+      name: '246 Sussex St',
+      city: 'San Francisco, CA',
+      image: require('../assets/image/anh3.png'),
+      isLike : false, 
+    },
+    {
+      name: '1206 Market St',
+      city: 'San Francisco, CA',
+      image: require('../assets/image/anh4.png'),
+      isLike : false, 
+    },
+  ]);
+  function like(name){
+    const update = seccategories.map((house)=>{
+      if (house.name==name){
+        house.isLike = !house.isLike;
+      }
+      return house;
+    })
+    setsecCategories(update);
+  }
   return (
     <View style={styles.container}>
+      <View>
+        <Image source = {require ('../assets/image/gai.png')} style={styles.image}/>
+        <Text style={styles.ntitle}>Home</Text>
+        <Icon name="plus-square-o" size={20} style={styles.nicon1} />
+        <TouchableOpacity  style={styles.nicon2} onPress={Houses}>
+        <Icon name="map-o" size={20} color={'green'}/>
+        </TouchableOpacity>
+      </View>
       <Text style={styles.title}>Categories</Text>
-      <FlatList
+      <FlatList 
         data={categories}
         horizontal={true}
         renderItem={({ item }) => (
@@ -42,56 +83,34 @@ const HomeScreen = () => {
           </TouchableOpacity>
         )}
       />
-      <View style={styles.bottomBar}>
-      <TouchableOpacity // Sử dụng TouchableOpacity thay thế cho Button
-          style={styles.button}
-          onPress={() => {
-            // Handle button press
-          }}
-        >
-          <Image
-            source={require("../assets/image/home.png")}
-            style={styles.buttonImage}
-          />
-          <Text>Home</Text>
-        </TouchableOpacity>
+      <Text style={styles.title}>Houses</Text>
+      <FlatList
+      data={seccategories}
+      numColumns={2} 
+      renderItem={({ item }) => (
         <TouchableOpacity
-          style={styles.button}
+          key={item.name}
+          style={styles.seccategory}
           onPress={() => {
-            // Handle button press
           }}
         >
           <Image
-            source={require("../assets/image/Collection.png")}
-            style={styles.buttonImage}
+            style={styles.secategoryImage}
+            source={item.image}
           />
-          <Text>Collection</Text>
+          <TouchableOpacity style={styles.Icon} onPress={()=>like(item.name)}>
+          <Icon size={25} name='heart'color={item.isLike?'green':'white'}/>
+          </TouchableOpacity>
+          <View style={styles.textContainer}>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.city}>{item.city}</Text>
+            </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            // Handle button press
-          }}
-        >
-          <Image
-            source={require("../assets/image/Saved.png")}
-            style={styles.buttonImage}
-          />
-          <Text>Saved</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            // Handle button press
-          }}
-        >
-          <Image
-            source={require("../assets/image/Search.png")}
-            style={styles.buttonImage}
-          />
-          <Text>Search</Text>
-        </TouchableOpacity>
-      </View>
+      )}
+      />
+      <TouchableOpacity style={styles.sbutton}>
+            <Text style={styles.Text}>Show all (7) </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -104,51 +123,109 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-    marginLeft: 10, // Điều chỉnh vị trí tiêu đề tùy ý
+    marginTop:20,
+    marginLeft: 10, 
+  },
+  ntitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop:30,
+    left:150, 
   },
   category: {
-    width: 150, // Điều chỉnh kích thước nút danh mục tùy ý
-    height: 100, // Điều chỉnh kích thước nút danh mục tùy ý
+    width: 150, 
+    height: 80, 
     padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#eeeeee',
-    marginRight: 10, // Thêm khoảng cách giữa các danh mục
-    alignItems: 'center', // Căn giữa nội dung ngang
+    backgroundColor: 'white',
+    marginRight: 10, 
+    alignItems: 'center', 
+    marginBottom:50,
   },
   categoryImage: {
-    width: 50, // Điều chỉnh kích thước hình ảnh tùy ý
-    height: 50, // Điều chỉnh kích thước hình ảnh tùy ý
+    width: 100, 
+    height: 70, 
+    borderRadius: 10,
+    borderColor:'gray',
+    borderWidth: 1,
   },
   categoryText: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginTop: 5, // Thêm khoảng cách giữa hình ảnh và văn bản
+    marginTop: 5, 
   },
-  listingList: {
-    margin: 10,
+  seccategory: {
+    width: 190, 
+    height: 250, 
+    padding: 10,
+    borderRadius: 30,
+    borderColor:'black',
+    backgroundColor: 'white',
+    marginRight: 10, 
+    alignItems: 'center', 
   },
-  listingImage: {
-    width: 80, // Chỉnh kích thước của ảnh trong danh sách
-    height: 80,
+  secategoryImage: {
+    width: 180, 
+    height: 180, 
   },
-  bottomBar: {
-    height: 50,
-    backgroundColor: "#ccc",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
+  seccategoryText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 5, 
   },
-  button: {
-    width: 100,
-    height: 50,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
+  sbutton: {
+    backgroundColor: 'transparent', 
+    borderColor: 'green', 
+    borderWidth: 2, 
+    borderRadius: 10, 
+    padding: 10, 
+    alignItems: 'center', 
+    marginBottom: 20,
   },
-  buttonImage: {
-    width: 20,
-    height: 20,
+  Text: {
+    color: 'green', 
+    fontSize: 16, 
+  },
+  textContainer:{
+    alignSelf:'flex-start',
+    position:'absolute',
+    paddingTop: 200,
+    marginLeft:10,
+  },
+  name:{
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  Icon:{
+    position:'absolute',
+    marginTop:15,
+    right: 15,
+    fontSize: 25,
+  },
+  newcontainer: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    padding: 10,
+  },
+  image: {
+    position:'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: 25, 
+    marginTop:30,
+    left:10, 
+  },
+  nicon1: {
+    position:'absolute',
+    marginLeft: 10, 
+    color: 'green', 
+    marginTop:30,
+    right:50, 
+  },
+  nicon2: {
+    position:'absolute',
+    marginLeft: 10, 
+    marginTop:30,
+    right:10, 
   },
 });
 

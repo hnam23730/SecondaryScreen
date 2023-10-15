@@ -1,51 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList,TouchableOpacity,Image } from 'react-native';
-
+import { StyleSheet, Text, View, FlatList,TouchableOpacity,Image,TextInput } from 'react-native';
+import SearchIcon from '../assets/image/IconSearch.png';
+import { useNavigation } from '@react-navigation/native';
 const App = () => {
+  const navigation = useNavigation();
+  const Home = () => {
+    navigation.navigate('Home');
+  };
+  const [searchQuery, setSearchQuery] = useState('');
+    const handleSearchQueryChange = (text) => {
+        setSearchQuery(text);
+    };
   const [houses, setHouses] = useState([
     {
       id: 1,
       image: require('../assets/image/anh1.png'),
       address: '1500 Polk St',
+      day: '14 days ago',
       city: 'San Francisco, CA',
-      price: 5875000,
+      price: '$5,875,000',
     },
     {
       id: 2,
       image: require('../assets/image/anh2.png'),
       address: '1010 Steiner St',
+      day: '4 hours ago',
       city: 'San Francisco, CA',
-      price: 3279000,
+      price: '$3,279,000',
     },
     {
       id: 3,
       image: require('../assets/image/anh3.png'),
       address: '76 Saturn St',
+      day: '9 days ago',
       city: 'San Francisco, CA',
-      price: 498000,
+      price: '$498,000',
     },
     {
       id: 4,
       image: require('../assets/image/anh4.png'),
       address: '246 Sussex St',
+      day: '2 hours ago',
       city: 'San Francisco, CA',
-      price: 899000,
+      price: '$899,000',
     },
     {
       id: 5,
+      image: require('../assets/image/Condos.png'),
       address: '278 Brannan St',
+      day: '7 days ago',
       city: 'San Francisco, CA',
-      price: 600000,
+      price: '$600,000',
     },
   ]);
+  
 
   useEffect(() => {
-    // Fetch houses from backend
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Houses</Text>
+      <View style={styles.searchBarContainer}>
+        <Image source={SearchIcon} style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search"
+          value={searchQuery}
+          onChangeText={handleSearchQueryChange}
+        />
+      </View>
       <FlatList
         data={houses}
         renderItem={({ item }) => (
@@ -59,61 +82,12 @@ const App = () => {
             <View style={styles.textContainer}>
               <Text style={styles.address}>{item.address}</Text>
               <Text style={styles.city}>{item.city}</Text>
+              <Text style={styles.city}>{item.day}</Text>
               <Text style={styles.price}>{item.price}</Text>
             </View>
           </View>
         )}
       />
-      <View style={styles.bottomBar}>
-      <TouchableOpacity // Sử dụng TouchableOpacity thay thế cho Button
-          style={styles.button}
-          onPress={() => {
-            // Handle button press
-          }}
-        >
-          <Image
-            source={require("../assets/image/home.png")}
-            style={styles.buttonImage}
-          />
-          <Text>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            // Handle button press
-          }}
-        >
-          <Image
-            source={require("../assets/image/Collection.png")}
-            style={styles.buttonImage}
-          />
-          <Text>Collection</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            // Handle button press
-          }}
-        >
-          <Image
-            source={require("../assets/image/Saved.png")}
-            style={styles.buttonImage}
-          />
-          <Text>Saved</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            // Handle button press
-          }}
-        >
-          <Image
-            source={require("../assets/image/Search.png")}
-            style={styles.buttonImage}
-          />
-          <Text>Search</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -128,53 +102,58 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   item: {
-    flexDirection: 'row', // Đặt hướng dòng thành "row" để các thành phần con nằm cạnh nhau
-    alignItems: 'center', // Căn giữa theo chiều dọc
+    flexDirection: 'row', 
+    alignItems: 'center', 
     padding: 10,
     backgroundColor: '#fafafa',
   },
-  imageContainer: {
-    flex: 1, // 1 phần cho hình ảnh
-  },
-  textContainer: {
-    flex: 3, // 3 phần cho văn bản
-    marginLeft: 10, // Khoảng cách giữa hình ảnh và văn bản
-  },
   houseImage: {
-    width: 80, // Điều chỉnh kích thước của hình ảnh
-    height: 80,
+    width: 150, 
+    height: 150,
+  },
+  searchBarContainer: {
+    width: 300,
+    height: 40,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FBFBFB",
+    borderColor: "white",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 10,
+    marginHorizontal: 10,
+    marginBottom: 10,
+    marginTop: 50,
+  },
+  searchIcon: {
+    width: 20, 
+    height: 20,
+    marginRight: 10,
+  },
+  textContainer:{
+    alignSelf:'flex-start',
+    position:'absolute',
+    marginLeft:10,
+    paddingLeft:150,
+  },
+  address:{
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   address: {
     fontSize: 16,
-    margin: 10,
+    margin: 5,
   },
   city: {
     fontSize: 14,
     color: '#666666',
-    margin: 10,
+    margin: 5,
   },
   price: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
-    margin: 10,
-  },
-  bottomBar: {
-    height: 50,
-    backgroundColor: "#ccc",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  button: {
-    width: 100,
-    height: 50,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonImage: {
-    width: 20,
-    height: 20,
+    margin: 5,
+    paddingLeft: 130,
   },
 });
 
